@@ -10,7 +10,7 @@ class RDFTriple(object):
         self.object = obj
 
     def __str__(self):
-        return '<%s>\t<%s>\t<%s>\t.' % (self.subject, self.predicate, self.object)
+        return '%s\t%s\t%s\t.' % (self.subject, self.predicate, self.object)
 
     def __lt__(self, other):
         return not other.subject < self.subject
@@ -56,6 +56,7 @@ def augment(freebase_fn, fbsubset_fn, out_fn):
             sub, pred, obj, _ = line.decode().strip().split('\t')
             # extract relevant predicate and make sure object is literal, not another entity
             if sub in fbsubset_entities and extract_predicate(pred) and not is_url(obj):
+                # print(line.decode().strip())
                 rdf_triple = RDFTriple(sub, pred, obj)
                 rdf_triples.append(rdf_triple)
 
@@ -66,8 +67,8 @@ def augment(freebase_fn, fbsubset_fn, out_fn):
     rdf_triples.sort()
     with open(out_fn, 'w') as fo:
         for rdf_triple in rdf_triples:
-            print('%s' % (str(rdf_triple)))
-            # fo.write('%s\n' % (str(rdf_triple)))
+            # print('%s' % (str(rdf_triple)))
+            fo.write('%s\n' % (str(rdf_triple)))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Augment Freebase subset to include additional fields')
