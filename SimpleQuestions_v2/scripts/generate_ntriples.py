@@ -18,7 +18,7 @@ def convert(infilename, outfilename):
                 obj = www2fb(obj)
                 triple_dict[(sub, rel, obj)] = 1
 
-            if (linenum % 1000000):
+            if (linenum % 1000000 == 0):
                 print("line number: {}".format(linenum))
 
     with open(outfilename, 'w') as fo:

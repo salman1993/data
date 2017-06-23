@@ -47,19 +47,19 @@ def augment(freebase_fn, fbsubset_fn, out_fn):
             rdf_triple = RDFTriple(sub, pred, obj)
             rdf_triples.append(rdf_triple)
 
-        if (linenum % 1000000):
-            print("file: {}, line number: {}".format("freebase-subset", linenum))
+            if (linenum % 1000000 == 0):
+                print("file: {}, line number: {}".format("freebase-subset", linenum))
 
     # extract predicates for those entities from entire freebase
-    with gzip.open(freebase_fn, 'r') as f:
+    with gzip.open(freebase_fn, 'rb') as f:
         for linenum, line in enumerate(f):
-            sub, pred, obj, _ = line.strip().split('\t')
+            sub, pred, obj, _ = line.decode().strip().split('\t')
             # extract relevant predicate and make sure object is literal, not another entity
             if sub in fbsubset_entities and extract_predicate(pred) and not is_url(obj):
                 rdf_triple = RDFTriple(sub, pred, obj)
                 rdf_triples.append(rdf_triple)
 
-            if (linenum % 1000000):
+            if (linenum % 1000000 == 0):
                 print("file: {}, line number: {}".format("freebase", linenum))
 
     # sort and write to outfile
