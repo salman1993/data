@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import argparse
+import gzip
 
 class RDFTriple(object):
     def __init__(self, sub, pred, obj):
@@ -37,7 +38,7 @@ def augment(freebase_fn, fbsubset_fn, out_fn):
 
     # get entities from freebase-subset
     with open(fbsubset_fn, 'r') as f:
-        for line in f:
+        for linenum, line in enumerate(f):
             sub, pred, obj, _ = line.strip().split('\t')
             fbsubset_entities.add(sub)
             if is_url(obj):  # skip if it is literal
@@ -46,14 +47,20 @@ def augment(freebase_fn, fbsubset_fn, out_fn):
             rdf_triple = RDFTriple(sub, pred, obj)
             rdf_triples.append(rdf_triple)
 
+        if (linenum % 1000000):
+            print("file: {}, line number: {}".format("freebase-subset", linenum))
+
     # extract predicates for those entities from entire freebase
-    with open(freebase_fn, 'r') as f:
-        for line in f:
+    with gzip.open(freebase_fn, 'r') as f:
+        for linenum, line in enumerate(f):
             sub, pred, obj, _ = line.strip().split('\t')
             # extract relevant predicate and make sure object is literal, not another entity
             if sub in fbsubset_entities and extract_predicate(pred) and not is_url(obj):
                 rdf_triple = RDFTriple(sub, pred, obj)
                 rdf_triples.append(rdf_triple)
+
+            if (linenum % 1000000):
+                print("file: {}, line number: {}".format("freebase", linenum))
 
     # sort and write to outfile
     rdf_triples.sort()
@@ -65,12 +72,15 @@ def augment(freebase_fn, fbsubset_fn, out_fn):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Augment Freebase subset to include additional fields')
     parser.add_argument('-f', '--freebase', dest='freebase', action='store', required = True,
-                        help='path to entire freebase dump')
+                        help='path to entire freebase dump - GZIP file')
     parser.add_argument('-s', '--fbsubset', dest='fbsubset', action='store', required=True,
                         help='path to freebase subset file')
     parser.add_argument('-o', '--output', dest='output', action='store', required=True,
                         help='output file')
 
     args = parser.parse_args()
+    print("Input - freebase: {}".format(args.freebase))
+    print("Input - fbsubset: {}".format(args.fbsubset))
+    print("Output: {}".format(args.output))
     augment(args.freebase, args.fbsubset, args.output)
     print("Augmented freebase-subset with extracted predicates for entities.")
