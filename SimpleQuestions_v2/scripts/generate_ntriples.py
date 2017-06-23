@@ -1,3 +1,6 @@
+#!/usr/bin/python
+
+import argparse
 
 def www2fb(in_str):
     out_str = 'http://rdf.freebase.com/ns/%s' % (in_str.split('www.freebase.com/')[-1].replace('/', '.'))
@@ -22,14 +25,12 @@ def convert(infilename, outfilename):
     print(len(triple_dict))
 
 if __name__ == '__main__':
-    try:
-        in_fn = sys.argv[1]
-        out_fn = sys.argv[2]
-        print("Input: {}".format(in_fn))
-        print("Output: {}".format(out_fn))
-    except:
-        print("ERROR: Wrong format.")
-        print("USAGE: python generate_ntriples.py [freebase_subset_file] [output_filename]")
+    parser = argparse.ArgumentParser(description='Convert Freebase subset URLs to Freebase format')
+    parser.add_argument('-i', '--input', dest='input', action='store', required = True,
+                        help='freebase subset file')
+    parser.add_argument('-o', '--output', dest='output', action='store', required=True,
+                        help='output file')
 
-    convert(in_fn, out_fn)
+    args = parser.parse_args()
+    convert(args.input, args.output)
     print("Converted freebase-subset to NTriples format.")
