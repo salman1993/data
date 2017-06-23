@@ -22,7 +22,7 @@ def is_url(field):
 
 def extract_predicate(cand_pred):
     preds_suffix_to_be_extracted = [
-        "ns/type.object.name>"
+        "ns/type.object.name>",
         "ns/common.topic.alias>",
         "key/wikipedia.en_title>",
         "2000/01/rdf-schema#label>"
