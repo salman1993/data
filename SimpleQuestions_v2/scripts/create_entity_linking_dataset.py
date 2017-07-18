@@ -30,8 +30,8 @@ def combine_datasets(dirpath, allpath):
 
 def www2fb(in_str):
     if in_str.startswith("www.freebase.com"):
-        out_str = 'fb:%s' % (in_str.split('www.freebase.com/')[-1].replace('/', '.'))
-    return out_str
+        return 'fb:%s' % (in_str.split('www.freebase.com/')[-1].replace('/', '.'))
+    return in_str
 
 def clean_uri(uri):
     if uri.startswith("<") and uri.endswith(">"):
