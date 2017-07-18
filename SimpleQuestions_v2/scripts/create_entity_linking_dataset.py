@@ -74,16 +74,17 @@ def create_entity_linking_dataset(datapath, namespath, outpath):
             items = line.strip().split("\t")
             if len(items) != 4:
                 print("ERROR: line - {}".format(line))
-            subject = www2fb(items[0])
-            predicate = www2fb(items[1])
-            object = www2fb(items[2])
-            question = items[3]
+            lineid = items[0]
+            subject = www2fb(items[1])
+            predicate = www2fb(items[2])
+            object = www2fb(items[3])
+            question = items[4]
             if subject not in names_map.keys():
                 print("WARNING: name not found in map. line - {}".format(line))
                 notfound += 1
                 names_map[subject] = []
 
-            line_to_write = "{} %%%% {} %%%% {} %%%% {} %%%% {}\n".format(subject, predicate, object, question,
+            line_to_write = "{} %%%% {} %%%% {} %%%% {} %%%% {} %%%% {}\n".format(subject, predicate, object, question,
                                                                                     " &&&& ".join(names_map[subject]))
             # print(line_to_write)
             outfile.write(line_to_write)
