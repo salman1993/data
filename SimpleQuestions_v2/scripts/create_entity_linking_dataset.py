@@ -84,7 +84,7 @@ def create_entity_linking_dataset(datapath, namespath, outpath):
                 notfound += 1
                 names_map[subject] = []
 
-            line_to_write = "{} %%%% {} %%%% {} %%%% {} %%%% {} %%%% {}\n".format(subject, predicate, object, question,
+            line_to_write = "{} %%%% {} %%%% {} %%%% {} %%%% {} %%%% {}\n".format(lineid, subject, predicate, object, question,
                                                                                     " &&&& ".join(names_map[subject]))
             # print(line_to_write)
             outfile.write(line_to_write)
