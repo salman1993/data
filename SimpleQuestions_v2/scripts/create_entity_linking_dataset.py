@@ -23,7 +23,7 @@ def combine_datasets(dirpath, allpath):
         fname = f_tuple[1]
         fpath = os.path.join(dirpath, f + ".txt")
         fpath_numbered = os.path.join(dirpath, f + "_numbered.txt")
-        numbered_command = "awk '{printf(\"{}-%d\t%s\n\", NR, $0)}' {} > {}".format(fname, fpath, fpath_numbered)
+        numbered_command = "awk '{{printf(\"{}-%d\\t%s\\n\", NR, $0)}}' {} > {}".format(fname, fpath, fpath_numbered)
         execute_shell_command(numbered_command)
         append_command = "cat {} >> {}".format(fpath_numbered, allpath)
         execute_shell_command(append_command)
