@@ -17,11 +17,16 @@ def execute_shell_command(command):
 
 def combine_datasets(dirpath, allpath):
     print("combining datasets...")
-    files = ["annotated_fb_data_train.txt", "annotated_fb_data_valid.txt", "annotated_fb_data_test.txt"]
-    for f in files:
-        fpath = os.path.join(dirpath, f)
-        command = "cat {} >> {}".format(fpath, allpath)
-        execute_shell_command(command)
+    files = [("annotated_fb_data_train", "train"), ("annotated_fb_data_valid", "val"), ("annotated_fb_data_test", "test")]
+    for f_tuple in files:
+        f = f_tuple[0]
+        fname = f_tuple[1]
+        fpath = os.path.join(dirpath, f + ".txt")
+        fpath_numbered = os.path.join(dirpath, f + "_numbered.txt")
+        numbered_command = "awk '{printf(\"{}-%d\t%s\n\", NR, $0)}' {} > {}".format(fname, fpath, fpath_numbered)
+        execute_shell_command(numbered_command)
+        append_command = "cat {} >> {}".format(fpath_numbered, allpath)
+        execute_shell_command(append_command)
 
 def www2fb(in_str):
     if in_str.startswith("www.freebase.com"):
@@ -100,7 +105,7 @@ if __name__ == '__main__':
     print("Dataset: {}".format(args.dataset))
     print("Names: {}".format(args.names))
     print("Output: {}".format(args.output))
-    allpath = os.path.join(args.dataset, "all-data.txt")
+    allpath = os.path.join(args.dataset, "all-data-numbered.txt")
     if not os.path.isfile(allpath):
         combine_datasets(args.dataset, allpath)
     create_entity_linking_dataset(allpath, args.names, args.output)
